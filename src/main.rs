@@ -10,6 +10,17 @@ use sdl2::keyboard::Keycode;
 
 const BUFFER_SIZE: usize = 84;
 
+const COLORS: [Color; 8] = [
+    Color::RGB(0, 0, 170),
+    Color::RGB(85, 255, 85),
+    Color::RGB(0, 170, 0),
+    Color::RGB(85, 85, 85),
+    Color::RGB(255, 255, 255),
+    Color::RGB(170, 85, 0),
+    Color::RGB(255, 85, 255),
+    Color::RGB(0, 0, 0),
+];
+
 fn read_file_in_byte_chunks(
     path: &str,
     canvas: &mut WindowCanvas,
@@ -21,7 +32,6 @@ fn read_file_in_byte_chunks(
     let mut y = 0;
 
     loop {
-        y += 1;
         let buffer = reader.fill_buf()?;
 
         let buffer_length = buffer.len();
@@ -34,28 +44,21 @@ fn read_file_in_byte_chunks(
         }
         let mut x = 0;
         for byte in buffer {
-            let nib1 = byte >> 4;
-            let nib2 = byte & 0x0F;
+            let nib1: u8 = byte >> 4;
+            let nib2: u8 = byte & 0x0F;
 
-            //print!("{}",nib1);
+            print!("{}", nib1);
+            print!("{}", nib2);
             if nib1 != 0 {
-                canvas.pixel(2 * x, y, Color::RGB(0, 255, 0))?;
+                canvas.pixel(x, y, COLORS[nib1 as usize])?;
             }
             if nib2 != 0 {
-                canvas.pixel(2 * x + 1, y, Color::RGB(0, 255, 0))?;
+                canvas.pixel(x + 1, y, COLORS[nib1 as usize])?;
             }
-
-            //canvas.pixel(x, y, 0xFF000FFu32)?;
-            //canvas.present();
-            //canvas.pixel(x, i as i16, 0xFF000FFu32)?;
-            //print!("{}",nib1);
-            //print!("{}",nib2);
-            x += 1;
+            x += 2;
         }
-        //println!();
+        println!();
 
-        // All bytes consumed from the buffer
-        // should not be read again.
         y += 1;
         reader.consume(buffer_length);
     }
@@ -68,8 +71,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let video_subsystem = sdl_context.video()?;
 
     let window = video_subsystem
-        .window("game tutorial", 336, 336)
-        .position_centered()
+        .window("map viewer", 168, 168)
         .build()
         .expect("could not initialize video subsystem");
 
@@ -78,7 +80,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .build()
         .expect("could not make a canvas");
 
-    canvas.set_draw_color(Color::RGB(0, 0, 255));
+    canvas.set_draw_color(Color::RGB(0, 0, 170));
     canvas.clear();
 
     read_file_in_byte_chunks("./assets/game/MAP.BIN", &mut canvas);
