@@ -1,5 +1,5 @@
 [package]
-name = "revultI"
+name = "re_v_ult"
 version = "0.1.0"
 edition = "2021"
 
@@ -7,3 +7,8 @@ edition = "2021"
 
 [dev-dependencies]
 rusty-hook = "^0.11.2"
+
+[dependencies.sdl2]
+version = "0.37.0"
+default-features = false
+features = ["gfx"]
