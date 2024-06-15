@@ -46,8 +46,8 @@ pub mod viewer {
                 let nib1: u8 = byte >> 4;
                 let nib2: u8 = byte & 0x0F;
 
-                //print!("{}", nib1);
-                //print!("{}", nib2);
+                print!("{}", nib1);
+                print!("{}", nib2);
                 if nib1 != 0 {
                     canvas.pixel(x, y, COLORS[nib1 as usize])?;
                 }

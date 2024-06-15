@@ -19,7 +19,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .expect("could not make a canvas");
     canvas.clear();
 
-    let _ = map::viewer::process_map_bin("./assets/game/MAP.BIN", &mut canvas);
     //process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
 
     let mut event_pump = sdl_context.event_pump()?;
@@ -32,6 +31,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ..
                 } => {
                     break 'running;
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::M),
+                    ..
+                } => {
+                    let _ = map::viewer::process_map_bin("./assets/game/MAP.BIN", &mut canvas);
                 }
                 _ => {}
             }
