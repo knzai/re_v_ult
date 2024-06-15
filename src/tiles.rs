@@ -84,9 +84,9 @@ pub fn process_ega_tile_bin(
 
     let file = File::open(path)?;
 
-    let mut reader = BufReader::with_capacity(8, file);
+    let mut reader = BufReader::with_capacity(4, file);
 
-    //let mut y = 0;
+    let mut y = 0;
 
     loop {
         let buffer = reader.fill_buf()?;
@@ -104,8 +104,13 @@ pub fn process_ega_tile_bin(
                 .for_each(|n| pixels[n] += 2 ^ i as u8 * ((byte >> n) & 1));
         }
         println!("{:?}", pixels);
+        for (i, p) in pixels.iter().enumerate() {
+            canvas.pixel(i as i16, y, EGACOLORS[*p as usize])?;
+        }
+        y += 1;
         reader.consume(buffer_length);
     }
+    canvas.present();
 
     Ok(())
 }
