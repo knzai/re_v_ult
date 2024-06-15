@@ -1,6 +1,7 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
+mod cga;
 mod map;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -19,7 +20,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .expect("could not make a canvas");
     canvas.clear();
 
-    //process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
+    //
 
     let mut event_pump = sdl_context.event_pump()?;
     'running: loop {
@@ -37,6 +38,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     ..
                 } => {
                     let _ = map::viewer::process_map_bin("./assets/game/MAP.BIN", &mut canvas);
+                }
+                Event::KeyDown {
+                    keycode: Some(Keycode::T),
+                    ..
+                } => {
+                    let _ = cga::process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
                 }
                 _ => {}
             }
