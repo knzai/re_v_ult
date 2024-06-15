@@ -6,15 +6,16 @@ pub mod viewer {
     use sdl2::pixels::Color;
     use sdl2::render::WindowCanvas;
 
+    //EGA colors by map nibble index
     const COLORS: [Color; 8] = [
-        Color::RGB(0, 0, 170),
-        Color::RGB(85, 255, 85),
-        Color::RGB(0, 170, 0),
-        Color::RGB(85, 85, 85),
-        Color::RGB(255, 255, 255),
-        Color::RGB(170, 85, 0),
-        Color::RGB(255, 85, 255),
-        Color::RGB(0, 0, 0),
+        Color::RGB(0, 0, 170),     //blue
+        Color::RGB(85, 255, 85),   //bright green
+        Color::RGB(0, 170, 0),     //green
+        Color::RGB(85, 85, 85),    //dark gray
+        Color::RGB(255, 255, 255), //white
+        Color::RGB(170, 85, 0),    //brown
+        Color::RGB(255, 85, 255),  //bright magenta
+        Color::RGB(0, 0, 0),       //black
     ];
 
     pub fn process_map_bin(
@@ -43,16 +44,15 @@ pub mod viewer {
             }
             let mut x = 0;
             for byte in buffer {
-                let nib1: u8 = byte >> 4;
-                let nib2: u8 = byte & 0x0F;
+                let nibs = crate::formats::Byte { byte: *byte }.nibbles();
 
-                print!("{}", nib1);
-                print!("{}", nib2);
-                if nib1 != 0 {
-                    canvas.pixel(x, y, COLORS[nib1 as usize])?;
+                print!("{}", nibs[0]);
+                print!("{}", nibs[1]);
+                if nibs[0] != 0 {
+                    canvas.pixel(x, y, COLORS[nibs[0] as usize])?;
                 }
-                if nib2 != 0 {
-                    canvas.pixel(x + 1, y, COLORS[nib1 as usize])?;
+                if nibs[1] != 0 {
+                    canvas.pixel(x + 1, y, COLORS[nibs[1] as usize])?;
                 }
                 x += 2;
             }

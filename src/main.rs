@@ -2,6 +2,7 @@ use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
 mod cga;
+mod formats;
 mod map;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -10,7 +11,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let window = video_subsystem
         //.window("map viewer", 168, 168)
-        .window("map viewer", 168, 168)
+        .window("map viewer", 168, 832)
+        //.allow_highdpi()
         .build()
         .expect("could not initialize video subsystem");
 
