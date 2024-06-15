@@ -1,9 +1,9 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
-mod cga;
 mod formats;
 mod map;
+mod tiles;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sdl_context = sdl2::init()?;
@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let window = video_subsystem
         //.window("map viewer", 168, 168)
-        .window("map viewer", 168, 832)
+        .window("map viewer", 850, 850)
         //.allow_highdpi()
         .build()
         .expect("could not initialize video subsystem");
@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     keycode: Some(Keycode::T),
                     ..
                 } => {
-                    let _ = cga::process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
+                    let _ = tiles::process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
                 }
                 _ => {}
             }

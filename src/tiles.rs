@@ -6,7 +6,7 @@ use sdl2::pixels::Color;
 use sdl2::render::WindowCanvas;
 
 //CGA colors
-const COLORS: [Color; 4] = [
+const CGACOLORS: [Color; 4] = [
     Color::RGB(0, 0, 0),       //black
     Color::RGB(0, 170, 170),   //cyan
     Color::RGB(170, 0, 170),   //magenta
@@ -46,7 +46,7 @@ pub fn process_cga_tile_bin(
                 let c = coups[i as usize];
                 print!("{:02b}", c);
                 //print!("{:?}", c);
-                canvas.pixel(4 * x + i, y, COLORS[c as usize])?;
+                canvas.pixel(4 * x + i, y, CGACOLORS[c as usize])?;
             }
             x += 1;
         }
