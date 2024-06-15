@@ -15,6 +15,7 @@ impl Byte {
             self.byte & 0b00000011,
         ]
     }
+    //(0..32).map (|n| (x >> n) & 1)
 
     // pub fn r_couplets(&self) -> [u8; 4] {
     //     [

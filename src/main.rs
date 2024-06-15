@@ -47,6 +47,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 } => {
                     let _ = tiles::process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
                 }
+                Event::KeyDown {
+                    keycode: Some(Keycode::E),
+                    ..
+                } => {
+                    let _ = tiles::process_ega_tile_bin("./assets/game/EGATILES.BIN", &mut canvas);
+                }
                 _ => {}
             }
         }

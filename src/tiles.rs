@@ -13,6 +13,26 @@ const CGACOLORS: [Color; 4] = [
     Color::RGB(170, 170, 170), //gray
 ];
 
+//EGA colors
+const EGACOLORS: [Color; 16] = [
+    Color::RGB(0, 0, 170),     //blue
+    Color::RGB(85, 255, 85),   //bright green
+    Color::RGB(0, 170, 0),     //green
+    Color::RGB(85, 85, 85),    //dark gray
+    Color::RGB(255, 255, 255), //white
+    Color::RGB(170, 85, 0),    //brown
+    Color::RGB(255, 85, 255),  //bright magenta
+    Color::RGB(0, 0, 0),       //black
+    Color::RGB(0, 0, 170),     //blue
+    Color::RGB(85, 255, 85),   //bright green
+    Color::RGB(0, 170, 0),     //green
+    Color::RGB(85, 85, 85),    //dark gray
+    Color::RGB(255, 255, 255), //white
+    Color::RGB(170, 85, 0),    //brown
+    Color::RGB(255, 85, 255),  //bright magenta
+    Color::RGB(0, 0, 0),       //black
+];
+
 pub fn process_cga_tile_bin(
     path: &str,
     canvas: &mut WindowCanvas,
@@ -50,6 +70,40 @@ pub fn process_cga_tile_bin(
             }
             x += 1;
         }
+        reader.consume(buffer_length);
+    }
+
+    Ok(())
+}
+
+pub fn process_ega_tile_bin(
+    path: &str,
+    canvas: &mut WindowCanvas,
+) -> Result<(), Box<dyn std::error::Error>> {
+    canvas.clear();
+
+    let file = File::open(path)?;
+
+    let mut reader = BufReader::with_capacity(8, file);
+
+    //let mut y = 0;
+
+    loop {
+        let buffer = reader.fill_buf()?;
+
+        let buffer_length = buffer.len();
+
+        if buffer_length == 0 {
+            canvas.present();
+            break;
+        }
+        let mut pixels = [0; 8];
+        for (i, byte) in buffer.iter().enumerate() {
+            (0..8)
+                .rev()
+                .for_each(|n| pixels[n] += 2 ^ i as u8 * ((byte >> n) & 1));
+        }
+        println!("{:?}", pixels);
         reader.consume(buffer_length);
     }
 
