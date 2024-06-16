@@ -39,19 +39,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     keycode: Some(Keycode::M),
                     ..
                 } => {
-                    let _ = map::viewer::process_map_bin("./assets/game/MAP.BIN", &mut canvas);
+                    map::viewer::process_map_bin("./assets/game/MAP.BIN", &mut canvas).expect("map");
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::T),
                     ..
                 } => {
-                    let _ = tiles::process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas);
+                    let _ = tiles::process_cga_tile_bin("./assets/game/CGATILES.BIN", &mut canvas).expect("cga tiles");
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::E),
                     ..
                 } => {
-                    let _ = tiles::process_ega_tile_bin("./assets/game/EGATILES.BIN", &mut canvas);
+                    let _ = tiles::process_ega_tile_bin("./assets/game/EGATILES.BIN", &mut canvas).expect("ega tiles");
                 }
                 _ => {}
             }
