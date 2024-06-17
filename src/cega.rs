@@ -1,16 +1,19 @@
 pub mod binary {
-    // use funty::Unsigned;
-    //
-    //     pub fn to_bits<T: Unsigned>(byte: T, len: u8) -> Vec<u8> {
-    //         (0..8 / len).rev().map(|n| (byte >> n) & 1).collect()
-    //     }
+    use funty::Unsigned;
 
-    pub fn bit_vec(byte: u8, len: u8) -> Vec<u8> {
+    pub fn bit_vec<T: Unsigned>(byte: T, len: u8) -> Vec<u8>
+    where
+        u8: From<T>,
+    {
         let mask: u8 = 2_u8.pow(len.into()) - 1;
         match len {
             1 | 2 | 4 => (0..8 / len)
                 .rev()
-                .map(|n| byte >> (n * len) & mask)
+                .map(|n| {
+                    let shift: u8 = n * len;
+                    let shifted: u8 = (byte >> shift).into();
+                    shifted & mask
+                })
                 .collect(),
             _ => panic!("invalid word length"),
         }
