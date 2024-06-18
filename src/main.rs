@@ -45,7 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     keycode: Some(Keycode::T),
                     ..
                 } => {
-                    let _ = cega::cga::out16x16("./assets/game/CGATILES.BIN", &mut canvas)
+                    let _ = cega::cga::out_cgatiles("./assets/game/CGATILES.BIN", &mut canvas)
                         .expect("cga tiles");
                 }
                 Event::KeyDown {
