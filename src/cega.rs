@@ -33,6 +33,7 @@ impl<'buffer> Cga<'buffer> {
         Color::WHITE,                 //white
     ];
 
+    const PALETTECHAR: [char; 4] = ['.', '+', 'X', '0'];
     const PALETTE1: [u32; 4] = [0x000000FF, 0x00AAAAFF, 0xAA00AAFF, 0xAAAAAAFF];
     const PALETTE1I: [u32; 4] = [0x000000FF, 0x55FFFFFF, 0xFF55FFFF, 0xFFFFFFFF];
 
@@ -46,8 +47,9 @@ impl<'buffer> Cga<'buffer> {
         let reader = std::fs::read(path)?;
         let indices = Self::palette_indices(&reader);
         let tiled = Self::tile(&indices, 16, Some(16), Some(80));
+        let chars = Self::to_char(&tiled);
 
-        for (i, index) in tiled.iter().enumerate() {
+        for (i, index) in chars.iter().enumerate() {
             if i % 80 == 0 {
                 println!();
             }
@@ -100,6 +102,13 @@ impl<'buffer> Cga<'buffer> {
         output
     }
 
+    pub fn to_char(buffer: &[u8]) -> Vec<char> {
+        buffer
+            .iter()
+            .map(|i| Self::PALETTECHAR[*i as usize])
+            .collect::<Vec<char>>()
+    }
+
     pub fn tile(
         buffer: &[u8],
         tile_width: usize,
@@ -110,7 +119,6 @@ impl<'buffer> Cga<'buffer> {
         let tile_height = tile_height.unwrap_or(pixel_count / tile_width);
         let max_width = max_width.unwrap_or(320);
         let tiles_per_row = max_width / tile_width;
-        let width = tiles_per_row * tile_width;
         let pixel_per_tile = tile_width * tile_height;
         let num_tiles = pixel_count / pixel_per_tile;
         let tile_rows = num_tiles.div_ceil(tiles_per_row);
@@ -120,7 +128,6 @@ impl<'buffer> Cga<'buffer> {
         //     tile_height,
         //     max_width,
         //     tiles_per_row,
-        //     width,
         //     pixel_per_tile,
         //     num_tiles,
         //     tile_rows
