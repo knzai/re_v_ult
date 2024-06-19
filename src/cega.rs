@@ -53,31 +53,22 @@ impl<'buffer> Cga<'buffer> {
             if i % 80 == 0 {
                 println!();
             }
-            print!("{}", index);
         }
-        Ok(())
-    }
 
-    pub fn out_16x16(
-        buffer: &[u8],
-        canvas: &mut WindowCanvas,
-        y: &mut u16,
-    ) -> Result<(), Box<dyn std::error::Error>> {
-        for (i, tastes) in buffer.view_bits::<Msb0>().chunks(2).enumerate() {
-            let x = i % 16;
-            if x == 0 {
-                println!();
-                *y += 1;
-            }
-            let color_index = tastes.load::<u8>();
-            print!("{}", color_index);
+        let width = 128;
+        for (i, index) in Self::tile(&indices, 16, Some(16), Some(width))
+            .iter()
+            .enumerate()
+        {
+            let x = i % width;
+            let y = i / width;
             canvas.pixel(
                 x.try_into().unwrap(),
-                (*y).try_into().unwrap(),
-                Self::SDLPALETTE1[color_index as usize],
+                y.try_into().unwrap(),
+                Self::SDLPALETTE1[*index as usize],
             )?;
         }
-
+        canvas.present();
         Ok(())
     }
 
@@ -89,24 +80,18 @@ impl<'buffer> Cga<'buffer> {
             .collect()
     }
 
-    pub fn to_string(buffer: &[u8], width: usize) -> String {
-        let mut output: String = "".to_owned();
-
-        for (i, index) in Self::palette_indices(buffer).iter().enumerate() {
-            output.push_str(&index.to_string());
-
-            if i % width == width - 1 {
-                output.push_str("\n");
-            }
-        }
-        output
-    }
-
     pub fn to_char(buffer: &[u8]) -> Vec<char> {
         buffer
             .iter()
             .map(|i| Self::PALETTECHAR[*i as usize])
             .collect::<Vec<char>>()
+    }
+
+    pub fn to_rgba(buffer: &[u8]) -> Vec<u32> {
+        Self::palette_indices(buffer)
+            .iter()
+            .map(|index| Self::PALETTE1I[*index as usize])
+            .collect()
     }
 
     pub fn tile(
@@ -149,13 +134,6 @@ impl<'buffer> Cga<'buffer> {
         }
         output
     }
-
-    pub fn to_rgba(buffer: &[u8]) -> Vec<u32> {
-        Self::palette_indices(buffer)
-            .iter()
-            .map(|index| Self::PALETTE1I[*index as usize])
-            .collect()
-    }
 }
 
 // #[test]
@@ -193,16 +171,6 @@ mod tests {
                 2, 1, 3, 3, 3, 3, 1, 2, 2, 1, 3, 3, 3, 3, 3, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,
                 3, 3, 3, 3, 3, 3, 3, 3
             ]
-        );
-    }
-
-    #[test]
-    fn to_string() {
-        let data: u128 = 0xFF_FF_FF_FF_FD_7F_F6_9F_F6_9F_FD_7F_FF_FF_FF_FF;
-        let buffer = data.to_be_bytes();
-        assert_eq!(
-            Cga::to_string(&buffer, 8),
-            "33333333\n33333333\n33311333\n33122133\n33122133\n33311333\n33333333\n33333333\n"
         );
     }
 
