@@ -53,6 +53,7 @@ impl<'buffer> Cga<'buffer> {
             if i % 80 == 0 {
                 println!();
             }
+			print!("{}", index);
         }
 
         let width = 128;
@@ -121,19 +122,20 @@ impl<'buffer> Cga<'buffer> {
         let mut output: Vec<u8> = vec![0; max_width * tile_rows * tile_height];
 
         for (i, index) in buffer.iter().enumerate() {
-            let pixel_num = i % pixel_per_tile;
-            let tile_num = i / pixel_per_tile;
-
-            let col = i % tile_width;
-            let row = (pixel_num / tile_width) * max_width;
-            let tile_col = (tile_num % tiles_per_row) * tile_width;
-            let tile_row = (tile_num / tiles_per_row) * tile_height * max_width;
-            let new_i = col + row + tile_col + tile_row;
-            //dbg!(col, row, tile_col, tile_row, new_i, *index);
-            output[new_i] = *index;
+            output[Self::new_index(i, pixel_per_tile, tile_width, tile_height, max_width, tiles_per_row)] = *index;
         }
         output
     }
+	pub fn new_index(i: usize, pixel_per_tile: usize, tile_width: usize, tile_height: usize, max_width: usize, tiles_per_row: usize) -> usize {
+        let pixel_num = i % pixel_per_tile;
+        let tile_num = i / pixel_per_tile;
+
+        let col = i % tile_width;
+        let row = (pixel_num / tile_width) * max_width;
+        let tile_col = (tile_num % tiles_per_row) * tile_width;
+        let tile_row = (tile_num / tiles_per_row) * tile_height * max_width;
+        col + row + tile_col + tile_row
+	}
 }
 
 // #[test]
