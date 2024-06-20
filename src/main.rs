@@ -1,10 +1,10 @@
 use sdl2::event::Event;
 use sdl2::keyboard::Keycode;
 
-mod cega;
+use cega::cga;
+
 mod formats;
 mod map;
-mod tiles;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let sdl_context = sdl2::init()?;
@@ -45,15 +45,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     keycode: Some(Keycode::T),
                     ..
                 } => {
-                    cega::Cga::out_cgatiles("./assets/game/CGATILES.BIN", &mut canvas)
+                    cga::out_cgatiles("./assets/game/CGATILES.BIN", &mut canvas)
                         .expect("cga tiles");
                 }
                 Event::KeyDown {
                     keycode: Some(Keycode::E),
                     ..
                 } => {
-                    tiles::process_ega_tile_bin("./assets/game/EGATILES.BIN", &mut canvas)
-                        .expect("ega tiles");
+                    // tiles::process_ega_tile_bin("./assets/game/EGATILES.BIN", &mut canvas)
+                    //     .expect("ega tiles");
                 }
                 _ => {}
             }

@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 funty = "2.0.0"
 bitvec = "1"
+cega = { path = "vendor/cega" }
 
 [dev-dependencies]
 rusty-hook = "^0.11.2"

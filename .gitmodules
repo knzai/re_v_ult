@@ -1,0 +1,3 @@
+[submodule "vendor/cega"]
+	path = vendor/cega
+	url = git@github.com:knzconnor/cega.git
